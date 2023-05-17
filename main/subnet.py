@@ -8,6 +8,7 @@ class Subnet:
     NOT NOW
     After creating an instance of class you can call instance which returns a tuple of (..., ..., ...)
     """
+
     def __init__(self, address, mask):
         self.address = address
         self.mask = mask
@@ -64,6 +65,67 @@ class Subnet:
                 raise ValueError('Entered invalid octet of mask')
 
         self._mask = fted_mask
+
+    def __dec2bin(self, address_list: list, *, rev: bool = False) -> list:
+        """
+        Converting DEC IP address (list) to BIN IP address ( list )
+
+        rev = False -> DEV to BIN
+        rev = True -> BIN to DEC
+        """
+
+        # TODO: Simplify and improve readability of this method
+
+        if rev:
+            return [str(int(x, base=2)) for x in address_list]
+        bin_address = list()
+        for x in address_list:
+            x = bin(int(x))[2:]
+            if len(x) < 8:
+                # ex 101 -> 00000101
+                x = '0' * (8 - len(x)) + x
+            bin_address.append(x)
+
+    def __get_invert_mask(self) -> list:
+        """
+        Method returns invert BIN representation of mask
+
+        ex.
+        -> 11111111.11111111.00000000.000000000
+        <- 00000000.00000000.11111111.111111111
+
+        """
+
+        invert = {'0': '1', '1': '0'}
+        invert_mask = []
+        for octet in self.__dec2bin(self.mask):
+            invert_mask.append(''.join([invert[char] for char in octet]))
+
+        return self.__dec2bin(invert_mask, rev=True)
+
+    def __get_sum_octets(self, address1: list, address2: list) -> list:
+        """
+        Returns sum of every octet of address1 and address2
+        """
+
+        octet = 0
+        octet_sum = list()
+        while octet < 4:
+            octet_sum.append(str(int(address1[octet]) + int(address2[octet])))
+            octet += 1
+
+        return octet_sum
+
+    def __get_short_mask(self) -> int:
+        """
+        Returns short representation of mask
+
+        ex.
+        255.255.255.0 -> 24
+        """
+
+        bin_mask = self.__dec2bin(self.mask)
+        return sum([int(x) for x in ''.join(bin_mask)])
 
 
 def main():
