@@ -16,6 +16,8 @@ class Subnet:
         self.net_broadcast = []
         self.sum_hosts = 0
 
+        self.__calculate()
+
     @property
     def address(self):
         """
@@ -86,6 +88,8 @@ class Subnet:
                 x = '0' * (8 - len(x)) + x
             bin_address.append(x)
 
+        return bin_address
+
     def __get_invert_mask(self) -> list:
         """
         Method returns invert BIN representation of mask
@@ -127,6 +131,54 @@ class Subnet:
         bin_mask = self.__dec2bin(self.mask)
         return sum([int(x) for x in ''.join(bin_mask)])
 
+    def __set_subnet_address(self):
+        """
+        Sets subnet address to class variable
+        """
+
+        bin_address_list = self.__dec2bin(self.address)
+        bin_mask = self.__dec2bin(self.mask)
+
+        octet = 0
+        net_address = []
+        while octet < 4:
+            new_octet = str()
+            for key, char in enumerate(bin_address_list[octet]):
+                new_octet += str(int(bin_mask[octet][key]) * int(char))
+            net_address.append(new_octet)
+
+            octet += 1
+
+        self.net_address = self.__dec2bin(net_address, rev=True)
+
+    def __set_subnet_broadcast(self):
+        """
+        Sets subnet broadcast address to class variable
+        """
+
+        self.__set_subnet_address()
+        invert_mask = self.__get_invert_mask()
+
+        self.net_broadcast = self.__get_sum_octets(self.net_address, invert_mask)
+
+    def __set_hosts_count(self):
+        """
+        Sets subnet host count to class variable
+        """
+
+        short_mask = self.__get_short_mask()
+
+        self.sum_hosts = 2**(32-short_mask) - 2
+
+    def __calculate(self):
+        """
+        Dispatch method of __set_subnet_address, __set_subnet_broadcast, __set_hosts_count
+        """
+
+        self.__set_subnet_address()
+        self.__set_subnet_broadcast()
+        self.__set_hosts_count()
+
 
 def main():
     address = input('IP Address: ')
@@ -134,8 +186,9 @@ def main():
 
     subnet = Subnet(address, mask)
 
-    print(subnet.address)
-    print(subnet.mask)
+    print(subnet.net_address)
+    print(subnet.net_broadcast)
+    print(subnet.sum_hosts)
 
 
 if __name__ == '__main__':
