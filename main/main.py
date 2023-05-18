@@ -4,8 +4,8 @@ from PIL import Image
 
 from subnet import Subnet
 
-# TODO: Add button to switch dark/light theme
-ctk.set_appearance_mode("light")
+
+ctk.set_appearance_mode("system")
 
 
 class App(ctk.CTk):

@@ -5,7 +5,6 @@ File contains class of subnet calculator
 
 class Subnet:
     """
-    NOT NOW
     After creating an instance of class you can call instance which returns a tuple of
     (subnet address, broadcast address, max host count)
     """
