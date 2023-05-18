@@ -1,10 +1,11 @@
 import tkinter as tk
 import customtkinter as ctk
+from PIL import Image
 
 from subnet import Subnet
 
 # TODO: Add button to switch dark/light theme
-ctk.set_appearance_mode("system")
+ctk.set_appearance_mode("light")
 
 
 class App(ctk.CTk):
@@ -16,9 +17,15 @@ class App(ctk.CTk):
 
         # Main settings
         super().__init__()
-        self.geometry("400x400")
+        self.geometry("500x500")
         self.title("Addresses")
         self.resizable(False, False)
+
+        # Theme switcher
+        theme_image = ctk.CTkImage(dark_image=Image.open('./img/dark.png'), light_image=Image.open('./img/light.png'))
+        self.theme_switcher = ctk.CTkButton(self, width=20, height=20, image=theme_image, text='',
+                                            command=self.__switch_theme)
+        self.theme_switcher.place(relx=0.90, rely=0.03)
 
         # IPv4 input Label
         self.ip_label = ctk.CTkLabel(self, text='Enter IP')
@@ -109,6 +116,16 @@ class App(ctk.CTk):
         self.net_address.configure(text=f'{self.net_address_message} {net_adr}')
         self.bd_address.configure(text=f'{self.bd_address_message} {bd_adr}')
         self.host_count.configure(text=f'{self.host_count_message} {host_c}')
+
+    def __switch_theme(self):
+        """
+        Switches between dark and light theme
+        """
+
+        if ctk.get_appearance_mode() == 'Dark':
+            ctk.set_appearance_mode('light')
+        else:
+            ctk.set_appearance_mode('dark')
 
 
 app = App()
