@@ -95,8 +95,11 @@ class App(ctk.CTk):
         Calls calculator with formatted IPv4 address, IPv4 Mask, and apply calucations
         """
 
-        subnet = Subnet(self.__format_address(), self.__format_mask())
-        self.__apply_calculation(*subnet())
+        try:
+            subnet = Subnet(self.__format_address(), self.__format_mask())
+            self.__apply_calculation(*subnet())
+        except ValueError as e:
+            self.start_button.configure(text=e, fg_color='tomato2', hover_color='tomato3')
 
     def __apply_calculation(self, net_adr, bd_adr, host_c):
         """
