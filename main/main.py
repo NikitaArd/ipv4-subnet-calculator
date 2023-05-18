@@ -17,7 +17,7 @@ class App(ctk.CTk):
 
         # Main settings
         super().__init__()
-        self.geometry("500x500")
+        self.geometry("500x410")
         self.title("Addresses")
         self.resizable(False, False)
 
@@ -26,6 +26,8 @@ class App(ctk.CTk):
         self.theme_switcher = ctk.CTkButton(self, width=20, height=20, image=theme_image, text='',
                                             command=self.__switch_theme)
         self.theme_switcher.place(relx=0.90, rely=0.03)
+
+        # TODO: Add auto-tab after entering 3-d digit
 
         # IPv4 input Label
         self.ip_label = ctk.CTkLabel(self, text='Enter IP')
