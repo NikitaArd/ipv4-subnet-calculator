@@ -42,18 +42,21 @@ class App(ctk.CTk):
         ctk.CTkLabel(self, text='').pack(before=self.mask_label)
 
         # Start button
-        self.start_button = ctk.CTkButton(self, text='Start')
+        self.start_button = ctk.CTkButton(self, text='Start', command=self.__calculate)
         self.start_button.pack(padx=30, pady=30)
 
         # Output labels (net address, broadcast address, host count)
         self.net_address = ctk.CTkLabel(self, text='Net address: ')
         self.net_address.pack(after=self.start_button, pady=5)
+        self.net_address_message = self.net_address.cget("text")
 
         self.bd_address = ctk.CTkLabel(self, text='Broadcast address: ')
         self.bd_address.pack(after=self.net_address, pady=5)
+        self.bd_address_message = self.bd_address.cget("text")
 
         self.host_count = ctk.CTkLabel(self, text='Host count: ')
         self.host_count.pack(after=self.bd_address, pady=5)
+        self.host_count_message = self.host_count.cget("text")
 
     def __create_ip_input(self, frame):
         """
@@ -72,6 +75,37 @@ class App(ctk.CTk):
             ip_input.append(octet)
 
         return ip_input
+
+    def __format_address(self):
+        """
+        Returns string representation of IPv4 entered by user
+        """
+
+        return '.'.join([octet.get().replace('.', '') for octet in self.ip_address if bool(octet.get())])
+
+    def __format_mask(self):
+        """
+        Returns string representation of IPv4 Mask entered by user
+        """
+
+        return '.'.join([octet.get().replace('.', '')  for octet in self.mask_address if bool(octet.get())])
+
+    def __calculate(self):
+        """
+        Calls calculator with formatted IPv4 address, IPv4 Mask, and apply calucations
+        """
+
+        subnet = Subnet(self.__format_address(), self.__format_mask())
+        self.__apply_calculation(*subnet())
+
+    def __apply_calculation(self, net_adr, bd_adr, host_c):
+        """
+        Rendering calculation on the screen
+        """
+
+        self.net_address.configure(text=f'{self.net_address_message} {net_adr}')
+        self.bd_address.configure(text=f'{self.bd_address_message} {bd_adr}')
+        self.host_count.configure(text=f'{self.host_count_message} {host_c}')
 
 
 app = App()

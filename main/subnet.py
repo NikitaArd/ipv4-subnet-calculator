@@ -6,7 +6,8 @@ File contains class of subnet calculator
 class Subnet:
     """
     NOT NOW
-    After creating an instance of class you can call instance which returns a tuple of (..., ..., ...)
+    After creating an instance of class you can call instance which returns a tuple of
+    (subnet address, broadcast address, max host count)
     """
 
     def __init__(self, address, mask):
@@ -17,6 +18,9 @@ class Subnet:
         self.sum_hosts = 0
 
         self.__calculate()
+
+    def __call__(self):
+        return '.'.join(self.net_address), '.'.join(self.net_broadcast), self.sum_hosts
 
     @property
     def address(self):
@@ -186,9 +190,7 @@ def main():
 
     subnet = Subnet(address, mask)
 
-    print(subnet.net_address)
-    print(subnet.net_broadcast)
-    print(subnet.sum_hosts)
+    print(subnet())
 
 
 if __name__ == '__main__':
