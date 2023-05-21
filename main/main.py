@@ -97,7 +97,7 @@ class App(ctk.CTk):
         Returns string representation of IPv4 Mask entered by user
         """
 
-        return '.'.join([octet.get().replace('.', '')  for octet in self.mask_address if bool(octet.get())])
+        return '.'.join([octet.get().replace('.', '') for octet in self.mask_address if bool(octet.get())])
 
     def __calculate(self):
         """
