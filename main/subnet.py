@@ -71,9 +71,10 @@ class Subnet:
 
         self._mask = fted_mask
 
-    def __dec2bin(self, address_list: list, *, rev: bool = False) -> list:
+    @staticmethod
+    def __dec2bin(address_list: list, *, rev: bool = False) -> list:
         """
-        Converting DEC IP address (list) to BIN IP address ( list )
+        Converting DEC IP address ( list ) to BIN IP address ( list )
 
         rev = False -> DEV to BIN
         rev = True -> BIN to DEC
@@ -93,6 +94,20 @@ class Subnet:
 
         return bin_address
 
+    @staticmethod
+    def __get_sum_octets(address1: list, address2: list) -> list:
+        """
+        Returns sum of every octet of address1 and address2
+        """
+
+        octet = 0
+        octet_sum = list()
+        while octet < 4:
+            octet_sum.append(str(int(address1[octet]) + int(address2[octet])))
+            octet += 1
+
+        return octet_sum
+
     def __get_invert_mask(self) -> list:
         """
         Method returns invert BIN representation of mask
@@ -109,19 +124,6 @@ class Subnet:
             invert_mask.append(''.join([invert[char] for char in octet]))
 
         return self.__dec2bin(invert_mask, rev=True)
-
-    def __get_sum_octets(self, address1: list, address2: list) -> list:
-        """
-        Returns sum of every octet of address1 and address2
-        """
-
-        octet = 0
-        octet_sum = list()
-        while octet < 4:
-            octet_sum.append(str(int(address1[octet]) + int(address2[octet])))
-            octet += 1
-
-        return octet_sum
 
     def __get_short_mask(self) -> int:
         """
