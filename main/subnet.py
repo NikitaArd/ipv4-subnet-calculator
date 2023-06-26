@@ -2,6 +2,8 @@
 File contains class of subnet calculator
 """
 
+from collections import namedtuple
+
 
 class Subnet:
     """
@@ -16,10 +18,12 @@ class Subnet:
         self.net_broadcast = []
         self.sum_hosts = 0
 
+        self.result = namedtuple('result', ['net_address', 'net_broadcast', 'sum_hosts'])
+
         self.__calculate()
 
     def __call__(self):
-        return '.'.join(self.net_address), '.'.join(self.net_broadcast), self.sum_hosts
+        return self.result('.'.join(self.net_address), '.'.join(self.net_broadcast), self.sum_hosts)
 
     @property
     def address(self):
