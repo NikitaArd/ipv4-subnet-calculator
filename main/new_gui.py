@@ -19,12 +19,21 @@ def main(page: ft.Page):
         Calls whenever user presses any key entering the octet of IPv4 or Mask form
         """
 
+        octet_input = event.control
+
         try:
+            render_default_labels()
+            if not event.data:
+                return
             octet_value = int(event.data)
         except ValueError:
-            # TODO: Add alert
+
+            if octet_input in ip_input:
+                render_error_message_on_label(ip_label, 'Enter a digit')
+            elif octet_input in mask_input:
+                render_error_message_on_label(mask_label, 'Enter a digit')
+
             return
-        octet_input = event.control
 
         if octet_value > 255:
             octet_input.value = '255'
@@ -33,6 +42,32 @@ def main(page: ft.Page):
             octet_input.value = '0'
 
         event.page.update()
+
+    def render_error_message_on_label(label: ft.Text, error_message: str):
+        """
+        Changes text and color of label and blocks  ( usage only for errors )
+        """
+
+        label.value = error_message
+        label.color = ft.colors.RED
+        start_button.disabled = True
+
+        page.update()
+
+    def render_default_labels():
+        """
+        Reset form labels and enables start button
+        """
+
+        ip_label.value = default_ip_label
+        ip_label.color = ft.colors.BLACK
+
+        mask_label.value = default_mask_label
+        mask_label.color = ft.colors.BLACK
+
+        start_button.disabled = False
+
+        page.update()
 
     def create_input_list() -> list:
         """
@@ -96,7 +131,11 @@ def main(page: ft.Page):
 
         empty_to_zero()
 
-        result = get_calculations()
+        try:
+            result = get_calculations()
+        except ValueError:
+            render_error_message_on_label(mask_label, 'Invalid Mask')
+            return
 
         net_address.value = f'Net address: {result.net_address}'
         broadcast_address.value = f'Broadcast address: {result.net_broadcast}'
@@ -104,17 +143,22 @@ def main(page: ft.Page):
 
         page.update()
 
-    ip_label = ft.Text('Enter IP', text_align=ft.TextAlign.CENTER, size=18, weight=ft.FontWeight.W_600)
+    # Creating IPv4 form
+    default_ip_label = 'Enter IP'
+    ip_label = ft.Text(default_ip_label, text_align=ft.TextAlign.CENTER, size=18, weight=ft.FontWeight.W_600)
     ip_input = create_input_list()
-    mask_label = ft.Text('Enter MASK', text_align=ft.TextAlign.CENTER, size=18, weight=ft.FontWeight.W_600)
+
+    # Creating Mask form
+    default_mask_label = 'Enter MASK'
+    mask_label = ft.Text(default_mask_label, text_align=ft.TextAlign.CENTER, size=18, weight=ft.FontWeight.W_600)
     mask_input = create_input_list()
-    start_button = ft.TextButton(text='Start', width=80, height=30, on_click=render_calculations)
+
+    start_button = ft.TextButton(text='Start', width=90, height=40, on_click=render_calculations,
+                                 style=ft.ButtonStyle(bgcolor={ft.MaterialState.DEFAULT: ft.colors.BLUE_50}))
 
     net_address = ft.Text('Net address: ')
     broadcast_address = ft.Text('Broadcast address: ')
-    host_count = ft.Text('Host count :')
-
-    outputs = (net_address, broadcast_address, host_count)
+    host_count = ft.Text('Host count: ')
 
     page.add(
         ft.Column([
